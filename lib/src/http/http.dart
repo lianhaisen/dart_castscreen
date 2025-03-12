@@ -23,7 +23,15 @@ abstract final class Http {
       switch (statusCode) {
         case 200:
           final body = utf8.decode(response.bodyBytes);
-          m['xml'] = XmlDocument.parse(body);
+          // 检查是否已经存在 <URLBase>
+          if (rootElement.getElement('URLBase') == null) {
+            final urlBaseElement = XmlElement(XmlName('URLBase'));
+            final uri = Uri.parse(url);
+            urlBaseElement.innerText = '${uri.scheme}://${uri.host}:${uri.port}';
+            rootElement.children.insert(0, urlBaseElement);
+          }
+
+          m['xml'] = document;
           break;
         default:
           m['msg'] = response.body;
