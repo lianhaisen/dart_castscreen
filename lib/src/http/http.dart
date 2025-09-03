@@ -23,6 +23,10 @@ abstract final class Http {
       switch (statusCode) {
         case 200:
           final body = utf8.decode(response.bodyBytes);
+          // 解析XML响应
+          final document = XmlDocument.parse(body);
+          final rootElement = document.rootElement;
+          
           // 检查是否已经存在 <URLBase>
           if (rootElement.getElement('URLBase') == null) {
             final urlBaseElement = XmlElement(XmlName('URLBase'));
